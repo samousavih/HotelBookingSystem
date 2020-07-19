@@ -2,8 +2,8 @@ using HotelBookingSystem.BookingRegistry;
 
 namespace HotelBookingSystem.BookingAmendments {
     public class FinishedBookingSpecification : Specification {
-        public override bool IsSatisfiedBy(BookingRecord bookingRecord) {
-            return bookingRecord.Status == BookingRecordStatus.Finished;
+        public FinishedBookingSpecification() {
+            this.Expression = bookingRecord => bookingRecord.Status == BookingRecordStatus.Finished;
         }
     }
 }

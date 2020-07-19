@@ -10,7 +10,7 @@ namespace HotelBookingSystem.BookingRegistry {
         }
         public IEnumerable<BookingRecord> GetBookingRecordsBySpecification(Specification spedification) {
              return context.BookingRecords
-                .Where(b => spedification.IsSatisfiedBy(b))
+                .Where(spedification.Expression)
                 .ToList();
         }
     }
