@@ -7,30 +7,26 @@ namespace HotelBookingSystem.BookingCreation
         public static Either<Problem, ConfirmedBooking> CreateBooking(BookingRequest bookingRequest)
         {
             return ValidateBooking(bookingRequest)
-                .Bind(validatedBooking =>
-            {
-                return GenerateBookingNumber(bookingRequest)
-                    .Bind(bookingNumber =>
-                {
+                .Bind(validatedBooking => {
+                return GenerateBookingNumber(validatedBooking)
+                    .Bind(bookingNumber => {
                     return CalculateFees(validatedBooking)
-                        .Bind<ConfirmedBooking>(bookingFees =>
-                        {
-                            var bookingAcknowledgement = CreateBookingAcknowledgement(bookingRequest, bookingNumber, bookingFees);
-                            return new ConfirmedBooking
-                            {
-                                BookingRequest = bookingRequest,
-                                BookingNumber = bookingNumber,
-                                BookingAcknowledgement = bookingAcknowledgement,
-                            };
+                        .Bind(bookingFees => {
+                            return CreateBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees)
+                                .Bind<ConfirmedBooking>(bookingAcknowledgement => new ConfirmedBooking {
+                                    ValidatedBooking = validatedBooking,
+                                    BookingNumber = bookingNumber,
+                                    BookingAcknowledgement = bookingAcknowledgement,
+                                });
                         });
                 });
             });
         }
-        private static BookingAcknowledgement CreateBookingAcknowledgement(BookingRequest bookingRequest, BookingNumber bookingNumber, BookingFees bookingFees)
+        private static Either<Problem,BookingAcknowledgement> CreateBookingAcknowledgement(ValidatedBooking validatedBooking, BookingNumber bookingNumber, BookingFees bookingFees)
         {
             throw new NotImplementedException();
         }
-        private static Either<Problem,BookingNumber> GenerateBookingNumber(BookingRequest bookingRequest)
+        private static Either<Problem,BookingNumber> GenerateBookingNumber(ValidatedBooking validatedBooking)
         {
             throw new NotImplementedException();
         }

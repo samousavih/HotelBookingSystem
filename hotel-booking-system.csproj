@@ -8,6 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
 
+  <PackageReference Include="CSharpFunctionalExtensions" Version="2.37.0" />
+
   <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.4" />
   </ItemGroup>
 

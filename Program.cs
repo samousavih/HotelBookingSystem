@@ -1,4 +1,5 @@
 ﻿using System;
+using HotelBookingSystem.BookingCreation;
 
 namespace HotelBookingSystem
 {
@@ -6,7 +7,7 @@ namespace HotelBookingSystem
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+           var result = CreateBookingWithLinq.CreateBooking(new BookingRequest());
         }
     }
 }

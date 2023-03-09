@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using HotelBookingSystem.BookingCreation;
-
-public readonly struct Either<L,R> : IEnumerable<EitherData<L,R>>
+public readonly struct Either<L, R>
 {
     public readonly static Either<L, R> Bottom = new Either<L, R>();
 
@@ -29,58 +25,31 @@ public readonly struct Either<L,R> : IEnumerable<EitherData<L,R>>
 
     public static implicit operator Either<L, R>(R value) =>
         new Either<L, R>(value);
-    
+
     public static implicit operator Either<L, R>(L value) =>
         new Either<L, R>(value);
 
-
-
-    public IEnumerator<EitherData<L, R>> GetEnumerator()
-    {
-        yield return new EitherData<L, R>(right, left);
-    }
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public Either<L, U> Select<U>(Func<R, U> map)
-    {
-        return this switch
+    public Either<L, U> Map<U>(Func<R, U> map) =>
+        this switch
         {
-            {isRight:true} => new Either<L, U>(map(right)),
-            {isLeft:true} => new Either<L, U>(left),
+            { isRight: true } => new Either<L, U>(map(right)),
+            { isLeft: true } => new Either<L, U>(left),
         };
-    }
-    
-    public Either<L, V> SelectMany<U, V>(Func<R, Either<L, U>> bind, Func<R, U, V> project)
-    {
-        return this.Bind(a =>
-            bind(a).Select(b =>
-                project(a, b)));
-    }
-    
-    public Either<L,U> Bind<U>(Func<R, Either<L,U>> f) =>  
-    this switch
-    {
-        {isRight:true} => f(right),
-        {isLeft:true} => new Either<L, U>(left),
-    };
-    public static Either<L, R> From(R value)
-    {
-        return new Either<L, R>(value);
-    }
+
+
+    public Either<L, U> Bind<U>(Func<R, Either<L, U>> f) =>
+        this switch
+        {
+            { isRight: true } => f(right),
+            { isLeft: true } => new Either<L, U>(left),
+        };
 }
 
-
-public class EitherData<L, R> 
+public static class EitherExtension
 {
-    public readonly R Right;
-    public readonly L Left;
-
-    public EitherData(R right, L left)
+    public static Either<L, V> SelectMany<U, V, L, R>(this Either<L,R> first, Func<R, Either<L, U>> getSecond, Func<R, U, V> project)
     {
-        Right = right;
-        Left = left;
+        return first.Bind(a => getSecond(a).Map(b => project(a, b)));
     }
+    public static Either<L, U> Select<U,L,R>(this Either<L,R> first, Func<R, U> map) => first.Map(map);
 }
