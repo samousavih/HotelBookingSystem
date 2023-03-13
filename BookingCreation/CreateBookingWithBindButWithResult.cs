@@ -1,50 +1,34 @@
 using System;
 using CSharpFunctionalExtensions;
 
-namespace HotelBookingSystem.BookingCreation
+namespace HotelBookingSystem.BookingCreation;
+
+public static class CreateBookingWithBindButWithResult
 {
-    public static class CreateBookingWithBindButWithResult
+    public static Result<ConfirmedBooking, Problem> CreateBooking(BookingRequest bookingRequest,
+        Func<BookingRequest, Result<ValidatedBooking, Problem>> validateBooking,
+        Func<ValidatedBooking, Result<BookingNumber, Problem>> generateBookingNumber,
+        Func<ValidatedBooking, Result<BookingFees, Problem>> calculateFees,
+        Func<ValidatedBooking, BookingNumber, BookingFees, Result<BookingAcknowledgement, Problem>> createBookingAcknowledgement)
     {
-        public static Result<ConfirmedBooking, Problem> CreateBooking(BookingRequest bookingRequest)
-        {
-            return ValidateBooking(bookingRequest)
-                .Bind(validatedBooking =>
-                {
-                    return GenerateBookingNumber(validatedBooking)
-                        .Bind(bookingNumber =>
-                        {
-                            return CalculateFees(validatedBooking)
-                                .Bind(bookingFees =>
-                                {
-                                    return CreateBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees)
-                                        .Map(bookingAcknowledgement => new ConfirmedBooking
-                                        {
-                                            ValidatedBooking = validatedBooking,
-                                            BookingNumber = bookingNumber,
-                                            BookingAcknowledgement = bookingAcknowledgement,
-                                        });
-                                });
-                        });
-                });
-        }
-        private static Result<BookingAcknowledgement,Problem> CreateBookingAcknowledgement(ValidatedBooking validatedBooking, BookingNumber bookingNumber, BookingFees bookingFees)
-        {
-            throw new NotImplementedException();
-        }
-        private static Result<BookingNumber,Problem> GenerateBookingNumber(ValidatedBooking validatedBooking)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static Result<BookingFees,Problem> CalculateFees(ValidatedBooking validatedBooking)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static Result<ValidatedBooking,Problem> ValidateBooking(BookingRequest bookingRequest)
-        {
-            throw new NotImplementedException();
-        }
+        return validateBooking(bookingRequest)
+            .Bind(validatedBooking =>
+            {
+                return generateBookingNumber(validatedBooking)
+                    .Bind(bookingNumber =>
+                    {
+                        return calculateFees(validatedBooking)
+                            .Bind(bookingFees =>
+                            {
+                                return createBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees)
+                                    .Map(bookingAcknowledgement => new ConfirmedBooking
+                                    {
+                                        ValidatedBooking = validatedBooking,
+                                        BookingNumber = bookingNumber,
+                                        BookingAcknowledgement = bookingAcknowledgement,
+                                    });
+                            });
+                    });
+            });
     }
-
 }

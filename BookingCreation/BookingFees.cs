@@ -1,5 +1,5 @@
 namespace HotelBookingSystem.BookingCreation
 {
-    internal class BookingFees
+    public class BookingFees
     { }
 }

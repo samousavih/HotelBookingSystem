@@ -1,26 +1,24 @@
 using System;
 public readonly struct Either<L, R>
 {
-    public readonly static Either<L, R> Bottom = new Either<L, R>();
-
-    internal readonly R right;
-    internal readonly L left;
-    private readonly bool isRight;
-    private readonly bool isLeft;
+    private readonly R _right;
+    private readonly L _left;
+    private readonly bool _isRight;
+    private readonly bool _isLeft;
 
     private Either(R right)
     {
-        this.isRight = true;
-        this.isLeft = false;
-        this.right = right;
-        this.left = default(L);
+        this._isRight = true;
+        this._isLeft = false;
+        this._right = right;
+        this._left = default;
     }
     private Either(L left)
     {
-        this.isLeft = true;
-        this.isRight = false;
-        this.left = left;
-        this.right = default(R);
+        this._isLeft = true;
+        this._isRight = false;
+        this._left = left;
+        this._right = default;
     }
 
     public static implicit operator Either<L, R>(R value) =>
@@ -30,19 +28,19 @@ public readonly struct Either<L, R>
         new Either<L, R>(value);
 
     public Either<L, U> Map<U>(Func<R, U> map) =>
-        this switch
-        {
-            { isRight: true } => new Either<L, U>(map(right)),
-            { isLeft: true } => new Either<L, U>(left),
-        };
-
+        this._isRight
+            ? new Either<L, U>(map(_right))
+            : new Either<L, U>(_left);
 
     public Either<L, U> Bind<U>(Func<R, Either<L, U>> f) =>
-        this switch
-        {
-            { isRight: true } => f(right),
-            { isLeft: true } => new Either<L, U>(left),
-        };
+        this._isRight
+            ? f(_right)
+            : new Either<L, U>(_left);
+    
+    public T Switch<T>(Func<L, T> leftFunc, Func<R, T> rightFunc) =>
+        this._isRight
+            ? rightFunc(_right)
+            : leftFunc(_left);
 }
 
 public static class EitherExtension

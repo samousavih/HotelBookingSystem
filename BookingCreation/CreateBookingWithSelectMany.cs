@@ -4,38 +4,25 @@ namespace HotelBookingSystem.BookingCreation;
 
 public static class CreateBookingWithSelectMany
 {
-    public static Either<Problem, ConfirmedBooking> CreateBooking(BookingRequest bookingRequest)
+    public static Either<Problem, ConfirmedBooking> CreateBooking(
+        BookingRequest bookingRequest,
+        Func<BookingRequest, Either<Problem, ValidatedBooking>> validateBooking,
+        Func<ValidatedBooking, Either<Problem, BookingNumber>> generateBookingNumber,
+        Func<ValidatedBooking, Either<Problem, BookingFees>> calculateFees,
+        Func<ValidatedBooking, BookingNumber, BookingFees, Either<Problem, BookingAcknowledgement>> createBookingAcknowledgement)
     {
-        
-        return ValidateBooking(bookingRequest)
-            .SelectMany(validatedBooking => GenerateBookingNumber(validatedBooking),
+
+        return validateBooking(bookingRequest)
+            .SelectMany(validatedBooking => generateBookingNumber(validatedBooking),
                 (validatedBooking, bookingNumber) => new { validatedBooking, bookingNumber })
-            .SelectMany(context => CalculateFees(context.validatedBooking),
+            .SelectMany(context => calculateFees(context.validatedBooking),
                 (context, bookingFees) => new { context.validatedBooking, context.bookingNumber, bookingFees })
-            .SelectMany(context => CreateBookingAcknowledgement(context.validatedBooking, context.bookingNumber, context.bookingFees),
+            .SelectMany(context => createBookingAcknowledgement(context.validatedBooking, context.bookingNumber, context.bookingFees),
                 (context, bookingAcknowledgement) => new ConfirmedBooking
                 {
                     ValidatedBooking = context.validatedBooking,
                     BookingNumber = context.bookingNumber,
                     BookingAcknowledgement = bookingAcknowledgement,
                 });
-    }
-    private static Either<Problem,BookingAcknowledgement> CreateBookingAcknowledgement(ValidatedBooking validatedBooking, BookingNumber bookingNumber, BookingFees bookingFees)
-    {
-        return new BookingAcknowledgement();
-    }
-    private static Either<Problem,BookingNumber> GenerateBookingNumber(ValidatedBooking validatedBooking)
-    {
-        return new BookingNumber();
-    }
-
-    private static Either<Problem,BookingFees> CalculateFees(ValidatedBooking validatedBooking)
-    {
-        return new BookingFees();
-    }
-
-    private static Either<Problem,ValidatedBooking> ValidateBooking(BookingRequest bookingRequest)
-    {
-        return new ValidatedBooking();
     }
 }
