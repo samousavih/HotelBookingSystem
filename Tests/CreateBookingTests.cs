@@ -1,6 +1,7 @@
 using System;
 using FluentAssertions;
 using HotelBookingSystem.BookingCreation;
+using HotelBookingSystem.Core;
 using Xunit;
 
 namespace HotelBookingSystem.Tests

@@ -1,4 +1,5 @@
 using System;
+using HotelBookingSystem.Core;
 
 namespace HotelBookingSystem.BookingCreation;
 
