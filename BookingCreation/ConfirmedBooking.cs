@@ -1,6 +1,6 @@
 namespace HotelBookingSystem.BookingCreation
 {
-    public class ConfirmedBooking
+    public record ConfirmedBooking
     {
         public ValidatedBooking ValidatedBooking { get; set; }
         public BookingNumber BookingNumber { get; set; }

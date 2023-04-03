@@ -1,6 +1,4 @@
 namespace HotelBookingSystem.BookingCreation
 {
-    public class ValidatedBooking
-    {
-    }
+    public record ValidatedBooking;
 }

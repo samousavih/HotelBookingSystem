@@ -1,6 +1,6 @@
 namespace HotelBookingSystem.BookingCreation
 {
-    public class Problem
+    public record Problem
     {
         public string Title { get; set; }
         public int Code { get; set; }

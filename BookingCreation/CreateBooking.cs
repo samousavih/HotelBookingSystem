@@ -5,12 +5,16 @@ namespace HotelBookingSystem.BookingCreation
 {
     public static class CreateBookingPlain
     {
-        public static ConfirmedBooking CreateBooking(BookingRequest bookingRequest)
+        public static ConfirmedBooking CreateBooking(BookingRequest bookingRequest,
+            Func<BookingRequest, ValidatedBooking> validateBooking,
+            Func<ValidatedBooking, BookingNumber> generateBookingNumber,
+            Func<ValidatedBooking, BookingFees> calculateFees,
+            Func<ValidatedBooking, BookingNumber, BookingFees, BookingAcknowledgement> createBookingAcknowledgement)
         {
-            var validatedBooking = ValidateBooking(bookingRequest);
-            var bookingNumber = GenerateBookingNumber(validatedBooking);
-            var bookingFees = CalculateFees(validatedBooking);
-            var bookingAcknowledgement = CreateBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees);
+            var validatedBooking = validateBooking(bookingRequest);
+            var bookingNumber = generateBookingNumber(validatedBooking);
+            var bookingFees = calculateFees(validatedBooking);
+            var bookingAcknowledgement = createBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees);
             
             return new ConfirmedBooking
             {
@@ -18,24 +22,6 @@ namespace HotelBookingSystem.BookingCreation
                 BookingNumber = bookingNumber,
                 BookingAcknowledgement = bookingAcknowledgement,
             };
-        }
-        private static BookingAcknowledgement CreateBookingAcknowledgement(ValidatedBooking validatedBooking, BookingNumber bookingNumber, BookingFees bookingFees)
-        {
-            throw new NotImplementedException();
-        }
-        private static BookingNumber GenerateBookingNumber(ValidatedBooking validatedBooking)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static BookingFees CalculateFees(ValidatedBooking validatedBooking)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static ValidatedBooking ValidateBooking(BookingRequest bookingRequest)
-        {
-            throw new NotImplementedException();
         }
     }
 }

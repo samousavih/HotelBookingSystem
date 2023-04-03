@@ -6,10 +6,10 @@ using Xunit;
 
 namespace HotelBookingSystem.Tests
 {
-    public class CreateBookingTests
+    public class CreateBookingWithBindTests
     {
         [Fact]
-        public void CreateBooking_WithValidRequest_ReturnsConfirmedBooking()
+        public void CreateBookingWithBind_WithValidRequest_ReturnsConfirmedBooking()
         {
             // Arrange
             var bookingRequest = new BookingRequest();
@@ -19,7 +19,7 @@ namespace HotelBookingSystem.Tests
             Either<Problem, BookingAcknowledgement> CreateBookingAcknowledgement(ValidatedBooking booking, BookingNumber number, BookingFees fees) => new BookingAcknowledgement();
 
             // Act
-            var result = CreateBookingWithLinq.CreateBooking(
+            var result = CreateBookingWithBind.CreateBooking(
                 bookingRequest,
                 ValidateBooking,
                 GenerateBookingNumber,

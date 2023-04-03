@@ -1,5 +1,4 @@
 namespace HotelBookingSystem.BookingCreation
 {
-    public class BookingAcknowledgement
-    { }
+    public record BookingAcknowledgement;
 }
