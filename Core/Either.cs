@@ -75,6 +75,8 @@ public static class TaskExtension
     {
         return Task.FromResult(Either<L,R>.From(value));
     }
+
+    public static async Task<Either<L, U>> Select<U,L,R>(this Task<Either<L,R>> first, Func<R, U> map) => (await first).Map(map);
     public static async Task<Either<L, V>> SelectMany<U, V, L, R>(this Task<Either<L,R>> first, Func<R, Task<Either<L, U>>> getSecond, Func<R, U, V> project)
     {
         return await (await first).BindAsync(async a => (await getSecond(a)).Map(b => project(a, b)));
