@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using HotelBookingSystem.Core;
+using LanguageExt;
 
 namespace HotelBookingSystem.BookingCreation;
 
-public static class CreateBookingWithLinqAsyncAndNonMonadic
+public static class CreateBookingWithLinqAsyncWithEitherFromLibraryWithTypeConverion
 {
     public static async Task<Either<Problem, ConfirmedBooking>> CreateBooking(
         BookingRequest bookingRequest,
@@ -13,11 +13,11 @@ public static class CreateBookingWithLinqAsyncAndNonMonadic
         Func<ValidatedBooking, BookingFees> calculateFees,
         Func<ValidatedBooking, BookingNumber, BookingFees, Either<Problem, BookingAcknowledgement>> createBookingAcknowledgement)
     {
-        return await 
-            from validatedBooking in validateBooking(bookingRequest)
-            from bookingNumber in generateBookingNumber(validatedBooking)
+        return await
+            from validatedBooking in validateBooking(bookingRequest).ToAsync()
+            from bookingNumber in generateBookingNumber(validatedBooking).ToAsync()
             let bookingFees = calculateFees(validatedBooking)
-            from bookingAcknowledgement in createBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees).ToEitherAsync()
+            from bookingAcknowledgement in createBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees).AsTask().ToAsync()
             select new ConfirmedBooking
             {
                 ValidatedBooking = validatedBooking,

@@ -22,7 +22,7 @@ public static class CreateBookingWithBind
                             .Bind(bookingFees =>
                             {
                                 return createBookingAcknowledgement(validatedBooking, bookingNumber, bookingFees)
-                                    .Bind<ConfirmedBooking>(bookingAcknowledgement => new ConfirmedBooking
+                                    .Map(bookingAcknowledgement => new ConfirmedBooking
                                     {
                                         ValidatedBooking = validatedBooking,
                                         BookingNumber = bookingNumber,
