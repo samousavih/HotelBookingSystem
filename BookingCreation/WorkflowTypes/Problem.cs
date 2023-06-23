@@ -6,4 +6,8 @@ namespace HotelBookingSystem.BookingCreation
         public int Code { get; set; }
         public string Detail { get; set; }
     }
+    public static class Problems {
+        public static Problem Nofee  = new Problem ();
+    }
 }
+
